@@ -6,7 +6,16 @@ for detecting hand landmarks from a BGR OpenCV frame.
 """
 
 import cv2
-import mediapipe as mp
+
+try:
+    from mediapipe.solutions import hands as _mp_hands_module
+    from mediapipe.solutions import drawing_utils as _mp_draw_module
+    from mediapipe.solutions import drawing_styles as _mp_draw_styles_module
+except ImportError as exc:
+    raise ImportError(
+        "MediaPipe is not installed or the 'solutions' submodule is missing. "
+        "Install a compatible version with: pip install 'mediapipe>=0.9.0,<0.11.0'"
+    ) from exc
 
 
 class HandDetector:
@@ -18,9 +27,9 @@ class HandDetector:
         min_detection_confidence: float = 0.7,
         min_tracking_confidence: float = 0.6,
     ) -> None:
-        self._mp_hands = mp.solutions.hands
-        self._mp_draw = mp.solutions.drawing_utils
-        self._mp_draw_styles = mp.solutions.drawing_styles
+        self._mp_hands = _mp_hands_module
+        self._mp_draw = _mp_draw_module
+        self._mp_draw_styles = _mp_draw_styles_module
 
         self.hands = self._mp_hands.Hands(
             static_image_mode=False,
